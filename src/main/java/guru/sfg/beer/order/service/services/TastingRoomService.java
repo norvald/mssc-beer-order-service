@@ -68,6 +68,11 @@ public class TastingRoomService {
 
         BeerOrderDto savedOrder = beerOrderService.placeOrder(customer.getId(), beerOrder);
 
+        log.debug("Ordered beer: "+savedOrder.getOrderStatus());
+        for (BeerOrderLineDto line : savedOrder.getBeerOrderLines()) {
+            log.debug("  beer: "+line.getBeerName()+", "+line.getBeerStyle());
+        }
+
     }
 
     private String getRandomBeerUpc() {
