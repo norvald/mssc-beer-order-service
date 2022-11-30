@@ -34,6 +34,8 @@ public class TastingRoomService {
         beerUpcs.add(BeerOrderBootStrap.BEER_1_UPC);
         beerUpcs.add(BeerOrderBootStrap.BEER_2_UPC);
         beerUpcs.add(BeerOrderBootStrap.BEER_3_UPC);
+        beerUpcs.add(BeerOrderBootStrap.BEER_4_UPC);
+        beerUpcs.add(BeerOrderBootStrap.BEER_5_UPC);
     }
 
     @Transactional
