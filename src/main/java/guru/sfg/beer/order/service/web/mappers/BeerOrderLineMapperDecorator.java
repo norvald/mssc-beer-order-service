@@ -29,16 +29,20 @@ public class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
             Optional<BeerDto> beerDtoOptional = beerService.getBeerById(beerOrderLineDto.getBeerId());
 
             beerDtoOptional.ifPresent(beerDto -> {
+                //beerOrderLineDto.setBeerId(beerDto.getId());
                 beerOrderLineDto.setBeerName(beerDto.getBeerName());
                 beerOrderLineDto.setBeerStyle(beerDto.getBeerStyle().toString());
+                beerOrderLineDto.setUpc(beerDto.getUpc());
+                beerOrderLineDto.setPrice(beerDto.getPrice());
             });
         } else if(beerOrderLineDto.getUpc() != null) {
             Optional<BeerDto> beerDtoOptional = beerService.getBeerByUpc(beerOrderLineDto.getUpc());
             beerDtoOptional.ifPresent(beerDto -> {
+                beerOrderLineDto.setBeerId(beerDto.getId());
                 beerOrderLineDto.setBeerName(beerDto.getBeerName());
                 beerOrderLineDto.setBeerStyle(beerDto.getBeerStyle().toString());
-                beerOrderLineDto.setUpc(beerDto.getUpc());
-                //beerOrderLineDto.setPrice(beerDto.getPrice());
+                //beerOrderLineDto.setUpc(beerDto.getUpc());
+                beerOrderLineDto.setPrice(beerDto.getPrice());
             });
         }
         return beerOrderLineDto;

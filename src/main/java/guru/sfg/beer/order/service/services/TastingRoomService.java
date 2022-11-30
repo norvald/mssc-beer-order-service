@@ -65,7 +65,7 @@ public class TastingRoomService {
                 .customerRef(UUID.randomUUID().toString())
                 .beerOrderLines(beerOrderLineSet)
                 .build();
-
+        log.debug("beerOrder: "+beerOrder);
         BeerOrderDto savedOrder = beerOrderService.placeOrder(customer.getId(), beerOrder);
 
         log.debug("Ordered beer: "+savedOrder.getOrderStatus());
