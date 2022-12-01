@@ -16,6 +16,7 @@
  */
 package guru.sfg.beer.order.service.domain;
 
+import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,8 @@ import lombok.Setter;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -51,6 +54,8 @@ public class BeerOrderLine extends BaseEntity {
     @ManyToOne
     private BeerOrder beerOrder;
 
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 40, columnDefinition = "varchar(40)")
     private UUID beerId;
     private String upc;
     private Integer orderQuantity = 0;

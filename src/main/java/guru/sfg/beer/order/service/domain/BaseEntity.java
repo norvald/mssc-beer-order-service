@@ -22,6 +22,8 @@ import lombok.Setter;
 import org.hibernate.annotations.*;
 
 import jakarta.persistence.*;
+import org.hibernate.type.SqlTypes;
+
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -45,7 +47,9 @@ public class BaseEntity {
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false )
+    @Convert(converter = UuidConverter.class)
+    @JdbcTypeCode(SqlTypes.CHAR)
+    @Column(length = 40, columnDefinition = "varchar(40)", updatable = false, nullable = false )
     private UUID id;
 
     @Version
