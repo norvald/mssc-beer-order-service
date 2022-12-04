@@ -1,7 +1,6 @@
-package guru.sfg.beer.order.service.services.beer.model;
+package guru.sfg.beer.inventory.service.web.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import guru.sfg.beer.order.service.services.beer.model.BeerStyleEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
