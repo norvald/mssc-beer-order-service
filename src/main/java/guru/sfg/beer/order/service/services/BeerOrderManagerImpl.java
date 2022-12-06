@@ -41,6 +41,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
         if(isValid) {
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
+            BeerOrder validateOrder = beerOrderRepository.findOneById(beerOrder.getId());
+            sendBeerOrderEvent(validateOrder, BeerOrderEventEnum.ALLOCATE_ORDER);
         } else {
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_FAILED);
         }
