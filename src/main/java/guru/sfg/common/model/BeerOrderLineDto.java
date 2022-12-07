@@ -32,7 +32,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BeerOrderLineDto{
+public class BeerOrderLineDto {
 
     @JsonProperty("id")
     private UUID id = null;
@@ -52,5 +52,6 @@ public class BeerOrderLineDto{
     private String beerStyle;
     private UUID beerId;
     private Integer orderQuantity = 0;
+    private Integer quantityAllocated;
     private BigDecimal price;
 }
