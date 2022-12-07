@@ -13,8 +13,8 @@ import java.util.UUID;
 @Slf4j
 @Component
 public class BeerServiceRestTemplateImpl implements BeerService {
-    private final String BEER_PATH = "/api/v1/beer/";
-    private final String BEERUPC_PATH = "/api/v1/beerUpc/";
+    public static final String BEER_PATH = "/api/v1/beer/";
+    public static final String BEERUPC_PATH = "/api/v1/beerUpc/";
     private final RestTemplate restTemplate;
 
     @Value("${sfg.brewery.beer-service-host}")

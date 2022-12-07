@@ -13,4 +13,13 @@
     <name>mssc-beer-order-service</name>
     <description>MSSC Beer Order Service</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8-standalone</artifactId>
+            <version>2.35.0</version>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 </project>
