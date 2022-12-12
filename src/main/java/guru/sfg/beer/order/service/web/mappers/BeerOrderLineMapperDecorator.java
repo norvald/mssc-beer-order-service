@@ -4,10 +4,12 @@ import guru.sfg.beer.order.service.domain.BeerOrderLine;
 import guru.sfg.beer.order.service.services.beer.BeerService;
 import guru.sfg.common.model.BeerDto;
 import guru.sfg.common.model.BeerOrderLineDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 
+@Slf4j
 public class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
     private BeerService beerService;
     private BeerOrderLineMapper mapper;
@@ -25,7 +27,18 @@ public class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
     @Override
     public BeerOrderLineDto beerOrderLineToDto(BeerOrderLine line) {
         BeerOrderLineDto beerOrderLineDto = mapper.beerOrderLineToDto(line);
-        if(beerOrderLineDto.getBeerId() != null) {
+        if(beerOrderLineDto.getUpc() != null) {
+            Optional<BeerDto> beerDtoOptional = beerService.getBeerByUpc(beerOrderLineDto.getUpc());
+            beerDtoOptional.ifPresent(beerDto -> {
+                beerOrderLineDto.setBeerId(beerDto.getId());
+                beerOrderLineDto.setBeerName(beerDto.getBeerName());
+                beerOrderLineDto.setBeerStyle(beerDto.getBeerStyle().toString());
+                //beerOrderLineDto.setUpc(beerDto.getUpc());
+                beerOrderLineDto.setPrice(beerDto.getPrice());
+            });
+            return beerOrderLineDto;
+
+        } else if(beerOrderLineDto.getBeerId() != null) {
             Optional<BeerDto> beerDtoOptional = beerService.getBeerById(beerOrderLineDto.getBeerId());
 
             beerDtoOptional.ifPresent(beerDto -> {
@@ -33,15 +46,6 @@ public class BeerOrderLineMapperDecorator implements BeerOrderLineMapper {
                 beerOrderLineDto.setBeerName(beerDto.getBeerName());
                 beerOrderLineDto.setBeerStyle(beerDto.getBeerStyle().toString());
                 beerOrderLineDto.setUpc(beerDto.getUpc());
-                beerOrderLineDto.setPrice(beerDto.getPrice());
-            });
-        } else if(beerOrderLineDto.getUpc() != null) {
-            Optional<BeerDto> beerDtoOptional = beerService.getBeerByUpc(beerOrderLineDto.getUpc());
-            beerDtoOptional.ifPresent(beerDto -> {
-                beerOrderLineDto.setBeerId(beerDto.getId());
-                beerOrderLineDto.setBeerName(beerDto.getBeerName());
-                beerOrderLineDto.setBeerStyle(beerDto.getBeerStyle().toString());
-                //beerOrderLineDto.setUpc(beerDto.getUpc());
                 beerOrderLineDto.setPrice(beerDto.getPrice());
             });
         }

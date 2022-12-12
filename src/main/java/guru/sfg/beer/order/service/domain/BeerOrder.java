@@ -21,10 +21,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -64,4 +61,16 @@ public class BeerOrder extends BaseEntity {
 
     private BeerOrderStatusEnum orderStatus = BeerOrderStatusEnum.NEW;
     private String orderStatusCallbackUrl;
+
+    @Override
+    public String toString() {
+        return "BeerOrder{" +
+                "id='"+getId()+"'"+
+                ", customerRef='" + customerRef + '\'' +
+                ", customer=" + customer +
+                ", beerOrderLines=" + beerOrderLines +
+                ", orderStatus=" + orderStatus +
+                ", orderStatusCallbackUrl='" + orderStatusCallbackUrl + '\'' +
+                '}';
+    }
 }
