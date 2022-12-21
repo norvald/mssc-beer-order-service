@@ -3,7 +3,7 @@ package guru.sfg.beer.order.service.state;
 import guru.sfg.beer.order.service.config.JmsConfig;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.services.BeerOrderManager;
-import guru.sfg.common.events.AllocateOrderResult;
+import guru.sfg.brewery.model.events.AllocateOrderResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class AllocateOrderResponseListener {
     private final BeerOrderRepository beerOrderRepository;
 
     @Transactional
-    @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESULT_QUEUE)
+    @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE)
     public void listen(AllocateOrderResult event) {
         log.debug("Allocation result for beer order "+event.getBeerOrderDto().getId() + " is "+event.getPendingInventory());
         if(event.getAllocationError()) {

@@ -16,7 +16,7 @@
  */
 package guru.sfg.beer.order.service.domain;
 
-import guru.sfg.common.model.BeerOrderStatusEnum;
+import guru.sfg.brewery.model.BeerOrderStatusEnum;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;

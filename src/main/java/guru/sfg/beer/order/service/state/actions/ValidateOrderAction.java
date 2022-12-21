@@ -5,10 +5,10 @@ import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.services.BeerOrderManagerImpl;
 import guru.sfg.beer.order.service.web.mappers.BeerOrderMapper;
-import guru.sfg.common.events.ValidateBeerOrderRequest;
-import guru.sfg.common.model.BeerOrderDto;
-import guru.sfg.common.model.BeerOrderEventEnum;
-import guru.sfg.common.model.BeerOrderStatusEnum;
+import guru.sfg.brewery.model.events.ValidateBeerOrderRequest;
+import guru.sfg.brewery.model.BeerOrderDto;
+import guru.sfg.brewery.model.BeerOrderEventEnum;
+import guru.sfg.brewery.model.BeerOrderStatusEnum;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;

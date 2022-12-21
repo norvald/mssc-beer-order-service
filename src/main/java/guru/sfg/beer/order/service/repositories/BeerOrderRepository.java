@@ -19,7 +19,7 @@ package guru.sfg.beer.order.service.repositories;
 
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.domain.Customer;
-import guru.sfg.common.model.BeerOrderStatusEnum;
+import guru.sfg.brewery.model.BeerOrderStatusEnum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

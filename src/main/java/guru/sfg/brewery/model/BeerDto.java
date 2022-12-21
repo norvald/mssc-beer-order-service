@@ -1,4 +1,4 @@
-package guru.sfg.common.model;
+package guru.sfg.brewery.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;

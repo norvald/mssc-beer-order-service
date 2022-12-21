@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package guru.sfg.common.model;
+package guru.sfg.brewery.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,16 +24,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BeerOrderLineDto {
-
+public class BeerOrderDto {
     @JsonProperty("id")
     private UUID id = null;
 
@@ -47,11 +46,9 @@ public class BeerOrderLineDto {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssZ", shape=JsonFormat.Shape.STRING)
     @JsonProperty("lastModifiedDate")
     private OffsetDateTime lastModifiedDate = null;
-    private String upc;
-    private String beerName;
-    private String beerStyle;
-    private UUID beerId;
-    private Integer orderQuantity = 0;
-    private Integer quantityAllocated;
-    private BigDecimal price;
+    private UUID customerId;
+    private String customerRef;
+    private List<BeerOrderLineDto> beerOrderLines;
+    private BeerOrderStatusEnum orderStatus;
+    private String orderStatusCallbackUrl;
 }

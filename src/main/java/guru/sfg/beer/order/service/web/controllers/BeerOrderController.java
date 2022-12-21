@@ -18,8 +18,8 @@
 package guru.sfg.beer.order.service.web.controllers;
 
 import guru.sfg.beer.order.service.services.BeerOrderService;
-import guru.sfg.common.model.BeerOrderDto;
-import guru.sfg.common.model.BeerOrderPagedList;
+import guru.sfg.brewery.model.BeerOrderDto;
+import guru.sfg.brewery.model.BeerOrderPagedList;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

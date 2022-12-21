@@ -5,11 +5,9 @@ import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.services.BeerOrderManagerImpl;
 import guru.sfg.beer.order.service.web.mappers.BeerOrderMapper;
-import guru.sfg.brewery.model.events.AllocateOrderRequest;
 import guru.sfg.brewery.model.BeerOrderEventEnum;
 import guru.sfg.brewery.model.BeerOrderStatusEnum;
-import org.springframework.transaction.annotation.Transactional;
-
+import guru.sfg.brewery.model.events.DeallocateOrderRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.core.JmsTemplate;
@@ -21,26 +19,25 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Component
-public class AllocateOrderAction implements Action<BeerOrderStatusEnum, BeerOrderEventEnum> {
+@RequiredArgsConstructor
+public class DeallocateOrderAction implements Action<BeerOrderStatusEnum, BeerOrderEventEnum> {
+
     private final JmsTemplate jmsTemplate;
     private final BeerOrderRepository beerOrderRepository;
     private final BeerOrderMapper beerOrderMapper;
 
-    @Transactional
     @Override
     public void execute(StateContext<BeerOrderStatusEnum, BeerOrderEventEnum> context) {
         String beerOrderId = (String) context.getMessage().getHeaders().get(BeerOrderManagerImpl.BEERORDER_ID_HEADER);
-        Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(UUID.fromString(beerOrderId));
-        optionalBeerOrder.ifPresentOrElse(beerOrder -> {
-            jmsTemplate.convertAndSend(JmsConfig.ALLOCATE_ORDER_QUEUE,
-                    AllocateOrderRequest.builder()
-                    .beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder))
-                    .build());
-            log.debug("Sent Allocate request to queue for order id " + beerOrderId);
-        }, () -> {
-            log.error("beerOrderRepository missing beerOrder: " + beerOrderId);
-        });
+        Optional<BeerOrder> beerOrderOptional = beerOrderRepository.findById(UUID.fromString(beerOrderId));
+
+        beerOrderOptional.ifPresentOrElse(beerOrder -> {
+            jmsTemplate.convertAndSend(JmsConfig.DEALLOCATE_ORDER_QUEUE,
+                    DeallocateOrderRequest.builder()
+                            .beerOrderDto(beerOrderMapper.beerOrderToDto(beerOrder))
+                            .build());
+            log.debug("Sent Deallocation Request for order id: " + beerOrderId);
+        }, () -> log.error("Beer Order Not Found!"));
     }
 }

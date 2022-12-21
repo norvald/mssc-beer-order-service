@@ -4,7 +4,7 @@ import guru.sfg.beer.order.service.config.JmsConfig;
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.services.BeerOrderManager;
-import guru.sfg.common.events.ValidateBeerOrderResponse;
+import guru.sfg.brewery.model.events.ValidateBeerOrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
@@ -23,7 +23,7 @@ public class ValidateOrderResponseListener {
     private final BeerOrderRepository beerOrderRepository;
 
     @Transactional
-    @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESULT_QUEUE)
+    @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE)
     public void listen(ValidateBeerOrderResponse event) {
         log.debug("listen("+event+")");
         Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(UUID.fromString(event.getBeerOrderId()));

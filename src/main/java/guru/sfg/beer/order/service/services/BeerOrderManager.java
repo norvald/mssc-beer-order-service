@@ -1,8 +1,10 @@
 package guru.sfg.beer.order.service.services;
 
 import guru.sfg.beer.order.service.domain.BeerOrder;
-import guru.sfg.common.model.BeerOrderDto;
+import guru.sfg.brewery.model.BeerOrderDto;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 public interface BeerOrderManager  {
     BeerOrder newBeerOrder(BeerOrder beerOrder);
@@ -11,4 +13,6 @@ public interface BeerOrderManager  {
     void beerOrderAllocationPassed(BeerOrderDto beerOrderDto);
     void beerOrderAllocationPendingInventory(BeerOrderDto beerOrderDto);
     void beerOrderAllocationFailed(BeerOrderDto beerOrderDto);
+    void beerOrderPickedUp(UUID orderId);
+    void cancelBeerOrder(UUID orderId);
 }

@@ -1,15 +1,17 @@
-package guru.sfg.common.events;
+package guru.sfg.brewery.model.events;
 
-import guru.sfg.common.model.BeerOrderDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Created by jt on 11/30/19.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ValidateBeerOrderRequest {
-    private BeerOrderDto beerOrderDto;
+public class FailedAllocationRequest {
+    private String beerOrderId;
 }

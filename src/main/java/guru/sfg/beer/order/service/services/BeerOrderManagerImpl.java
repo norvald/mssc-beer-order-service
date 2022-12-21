@@ -3,9 +3,9 @@ package guru.sfg.beer.order.service.services;
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.state.BeerOrderStateChangeInterceptor;
-import guru.sfg.common.model.BeerOrderDto;
-import guru.sfg.common.model.BeerOrderEventEnum;
-import guru.sfg.common.model.BeerOrderStatusEnum;
+import guru.sfg.brewery.model.BeerOrderDto;
+import guru.sfg.brewery.model.BeerOrderEventEnum;
+import guru.sfg.brewery.model.BeerOrderStatusEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -84,7 +84,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(beerOrderDto.getId());
         optionalBeerOrder.ifPresentOrElse(beerOrder -> {
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
-            waitForStatus(beerOrder.getId(),BeerOrderStatusEnum.PENDING_INVENTORY);
+            waitForStatus(beerOrder.getId(), BeerOrderStatusEnum.PENDING_INVENTORY);
             log.debug("beerOrderAllocationPassed: PENDING_INVENTORY");
             updateAllocatedQty(beerOrderDto);
         }, () -> {
@@ -120,8 +120,26 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         }, () -> {
             log.warn("Missing beerOrder");
         });
-
     }
+
+    @Override
+    @Transactional
+    public void beerOrderPickedUp(UUID orderId) {
+        Optional<BeerOrder> beerOrderOptional = beerOrderRepository.findById(orderId);
+        beerOrderOptional.ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.BEERORDER_PICKED_UP);
+        }, () -> log.error("Order Not Found. Id: " + orderId));
+    }
+
+    @Override
+    @Transactional
+    public void cancelBeerOrder(UUID orderId) {
+        Optional<BeerOrder> beerOrderOptional = beerOrderRepository.findById(orderId);
+        beerOrderOptional.ifPresentOrElse(beerOrder -> {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.CANCEL_ORDER);
+        }, () -> log.error("Order cancelled. Id: " + orderId));
+    }
+
 
     private void sendBeerOrderEvent(BeerOrder beerOrder, BeerOrderEventEnum eventEnum) {
         StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
