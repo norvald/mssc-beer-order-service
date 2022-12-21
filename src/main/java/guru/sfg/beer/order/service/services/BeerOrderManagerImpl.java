@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,9 +36,9 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         beerOrder.setId(null);
         beerOrder.setOrderStatus(BeerOrderStatusEnum.NEW);
 
-        log.debug("Saving: "+beerOrder);
+        log.debug("newBeerOrder Saving: " + beerOrder);
         BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
-        log.debug("savedBeerOrder: "+savedBeerOrder);
+        log.debug("savedBeerOrder: " + savedBeerOrder);
         log.debug("savedBeerOrderId: " + savedBeerOrder.getId());
         sendBeerOrderEvent(savedBeerOrder, BeerOrderEventEnum.VALIDATE_ORDER);
         return savedBeerOrder;
@@ -49,6 +52,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         if (isValid) {
             log.debug("Trigger VALIDATION_PASSED");
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.VALIDATION_PASSED);
+            waitForStatus(beerOrder.getId(), BeerOrderStatusEnum.VALIDATED);
             Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(beerOrder.getId());
             optionalBeerOrder.ifPresentOrElse(validatedOrder -> {
                 sendBeerOrderEvent(validatedOrder, BeerOrderEventEnum.ALLOCATE_ORDER);
@@ -61,11 +65,14 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         //return sm;
     }
 
+    @Transactional
     @Override
     public void beerOrderAllocationPassed(BeerOrderDto beerOrderDto) {
         Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(beerOrderDto.getId());
         optionalBeerOrder.ifPresentOrElse(beerOrder -> {
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+            waitForStatus(beerOrder.getId(), BeerOrderStatusEnum.ALLOCATED);
+            log.debug("beerOrderAllocationPassed: ALLOCATED");
             updateAllocatedQty(beerOrderDto);
         }, () -> {
             log.warn("Missing beerOrder");
@@ -77,6 +84,8 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(beerOrderDto.getId());
         optionalBeerOrder.ifPresentOrElse(beerOrder -> {
             sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+            waitForStatus(beerOrder.getId(),BeerOrderStatusEnum.PENDING_INVENTORY);
+            log.debug("beerOrderAllocationPassed: PENDING_INVENTORY");
             updateAllocatedQty(beerOrderDto);
         }, () -> {
             log.warn("Missing beerOrder");
@@ -91,7 +100,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         }, () -> {
             log.warn("Missing beerOrder");
         });
-}
+    }
 
     private void updateAllocatedQty(BeerOrderDto beerOrderDto) {
         Optional<BeerOrder> optionalAllocatedOrder = beerOrderRepository.findById(beerOrderDto.getId());
@@ -100,13 +109,13 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
             allocatedOrder.getBeerOrderLines().forEach(beerOrderLine -> {
                 beerOrderDto.getBeerOrderLines().forEach(beerOrderLineDto -> {
                     if (beerOrderLine.getId().equals(beerOrderLineDto.getId())) {
-                        beerOrderLine.setQuantityAllocated(beerOrderLine.getQuantityAllocated());
+                        beerOrderLine.setQuantityAllocated(beerOrderLineDto.getQuantityAllocated());
                     }
                 });
             });
-            log.debug("Saving: "+allocatedOrder);
+            log.debug("updateAllocatedQty Saving: " + allocatedOrder);
             BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(allocatedOrder);
-            log.debug("savedBeerOrder: "+savedBeerOrder);
+            log.debug("savedBeerOrder: " + savedBeerOrder);
             log.debug("savedBeerOrderId: " + savedBeerOrder.getId());
         }, () -> {
             log.warn("Missing beerOrder");
@@ -122,6 +131,38 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
                 .build();
 
         sm.sendEvent(msg);
+    }
+
+    private void waitForStatus(UUID beerOrderId, BeerOrderStatusEnum statusEnum) {
+        AtomicBoolean found = new AtomicBoolean(false);
+        AtomicInteger loopCount = new AtomicInteger(0);
+
+        while (!found.get()) {
+            if (loopCount.incrementAndGet() > 10) {
+                found.set(true);
+                log.debug("Loop retries exceeded");
+            }
+
+            beerOrderRepository.findById(beerOrderId).ifPresentOrElse(beerOrder -> {
+                if (beerOrder.getOrderStatus().equals(statusEnum)) {
+                    found.set(true);
+                    log.debug("Order found");
+                } else {
+                    log.debug("Order Status not equal. Expected: " + statusEnum.name() + " Found: " + beerOrder.getOrderStatus().name());
+                }
+            }, () -> {
+                log.debug("Order Id not found");
+            });
+
+            if (!found.get()) {
+                try {
+                    log.debug("Sleeping for retry");
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // do nothing
+                }
+            }
+        }
     }
 
     private StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> build(BeerOrder beerOrder) {

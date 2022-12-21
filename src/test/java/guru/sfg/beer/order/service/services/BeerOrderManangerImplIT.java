@@ -13,6 +13,7 @@ import guru.sfg.beer.order.service.services.beer.BeerServiceRestTemplateImpl;
 import guru.sfg.common.model.BeerDto;
 import guru.sfg.common.model.BeerOrderStatusEnum;
 import guru.sfg.common.model.BeerStyleEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@Slf4j
 @WireMockTest(httpPort = 8083)
 @SpringBootTest
 public class BeerOrderManangerImplIT {
@@ -87,11 +89,13 @@ public class BeerOrderManangerImplIT {
         UUID id = saveBeerOrder.getId();
         System.out.println("beerOrderId: "+id);
 
+        log.debug("Wait for ALLOCATED");
         await().untilAsserted(() -> {
             BeerOrder foundOrder = beerOrderRepository.findById(id).get();
             assertEquals(BeerOrderStatusEnum.ALLOCATED, foundOrder.getOrderStatus());
         });
 
+        log.debug("Wait for orderQuantity");
         await().untilAsserted(() -> {
             BeerOrder foundOrder = beerOrderRepository.findById(id).get();
             BeerOrderLine line = foundOrder.getBeerOrderLines().iterator().next();

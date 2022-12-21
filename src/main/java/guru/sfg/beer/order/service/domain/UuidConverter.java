@@ -16,9 +16,9 @@ public class UuidConverter
         if(attribute == null) {
             return null;
         }
-        log.debug("UUID object: "+attribute);
+        //log.debug("UUID object: "+attribute);
         String str = attribute.toString();
-        log.debug("db str: "+str);
+        //log.debug("db str: "+str);
         return  str;
     }
 
@@ -27,9 +27,9 @@ public class UuidConverter
         if(dbData == null) {
             return null;
         }
-        log.debug("db str: "+dbData);
+        //log.debug("db str: "+dbData);
         UUID uuid = UUID.fromString(dbData);
-        log.debug("UUID object: "+uuid);
+        //log.debug("UUID object: "+uuid);
         return uuid;
     }
 }
