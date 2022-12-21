@@ -32,7 +32,9 @@ public class BeerOrderAllocationListener {
         } else {
             diff = 0;
         }
-
+        if(StringUtils.equals(request.getBeerOrderDto().getCustomerRef(),"dont-allocate")) {
+            return;
+        }
         request.getBeerOrderDto().getBeerOrderLines().forEach(beerOrderLineDto -> {
             beerOrderLineDto.setQuantityAllocated(beerOrderLineDto.getOrderQuantity() - diff);
         });
