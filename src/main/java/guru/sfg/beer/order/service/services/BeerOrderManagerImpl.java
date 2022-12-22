@@ -47,7 +47,7 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
     @Transactional
     @Override
     public void validateOrder(BeerOrder beerOrder, Boolean isValid) {
-        log.debug("beerOrder: " + beerOrder + "->" + isValid);
+        log.debug("validateOrder beerOrder: " + beerOrder + "->" + isValid);
         //StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
         if (isValid) {
             log.debug("Trigger VALIDATION_PASSED");

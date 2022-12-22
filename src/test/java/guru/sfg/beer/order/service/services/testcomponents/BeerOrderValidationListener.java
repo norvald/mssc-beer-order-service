@@ -1,8 +1,8 @@
 package guru.sfg.beer.order.service.services.testcomponents;
 
 import guru.sfg.beer.order.service.config.JmsConfig;
-import guru.sfg.brewery.model.events.ValidateBeerOrderRequest;
-import guru.sfg.brewery.model.events.ValidateBeerOrderResponse;
+import guru.sfg.brewery.model.events.ValidateOrderRequest;
+import guru.sfg.brewery.model.events.ValidateOrderResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
@@ -20,7 +20,7 @@ public class BeerOrderValidationListener {
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_QUEUE)
     public void listen(Message msg) {
         boolean isValid = true;
-        ValidateBeerOrderRequest request = (ValidateBeerOrderRequest) msg.getPayload();
+        ValidateOrderRequest request = (ValidateOrderRequest) msg.getPayload();
         log.debug("ValidateBeerOrderRequest: " + request);
         if (StringUtils.equals(request.getBeerOrderDto().getCustomerRef(), "fail-validation")) {
             isValid = false;
@@ -30,9 +30,9 @@ public class BeerOrderValidationListener {
         }
 
         jmsTemplate.convertAndSend(JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE,
-                ValidateBeerOrderResponse.builder()
+                ValidateOrderResult.builder()
                         .isValid(isValid)
-                        .beerOrderId(request.getBeerOrderDto().getId().toString())
+                        .orderId(request.getBeerOrderDto().getId().toString())
                         .build());
     }
 }

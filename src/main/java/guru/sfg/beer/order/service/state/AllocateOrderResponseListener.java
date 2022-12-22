@@ -23,9 +23,9 @@ public class AllocateOrderResponseListener {
     @JmsListener(destination = JmsConfig.ALLOCATE_ORDER_RESPONSE_QUEUE)
     public void listen(AllocateOrderResult event) {
         log.debug("Allocation result for beer order "+event.getBeerOrderDto().getId() + " is "+event.getPendingInventory());
-        if(event.getAllocationError()) {
+        if(event.getAllocationError() != null && event.getAllocationError()) {
             beerOrderManager.beerOrderAllocationFailed(event.getBeerOrderDto());
-        } else if(event.getPendingInventory()) {
+        } else if(event.getPendingInventory() != null && event.getPendingInventory()) {
             beerOrderManager.beerOrderAllocationPendingInventory(event.getBeerOrderDto());
         } else {
             beerOrderManager.beerOrderAllocationPassed(event.getBeerOrderDto());

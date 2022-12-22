@@ -85,7 +85,7 @@ public class BeerOrderManangerImplIT {
     @Test
     //@Transactional
     void testNewToAllocated() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -124,7 +124,7 @@ public class BeerOrderManangerImplIT {
     }
     @Test
     void testFailedValidation() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -141,7 +141,7 @@ public class BeerOrderManangerImplIT {
     }
     @Test
     void testValidationPendingToCancel() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -164,7 +164,7 @@ public class BeerOrderManangerImplIT {
     }
     @Test
     void testNewToAllocationPendingToCancel() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -187,7 +187,7 @@ public class BeerOrderManangerImplIT {
     }
     @Test
     void testFailedAllocation() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -212,7 +212,7 @@ public class BeerOrderManangerImplIT {
 
     @Test
     void testAllocatedToCancelled() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -239,7 +239,7 @@ public class BeerOrderManangerImplIT {
     }
     @Test
     void testPartialAllocation() throws JsonProcessingException, InterruptedException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 
@@ -257,7 +257,7 @@ public class BeerOrderManangerImplIT {
 
     @Test
     void testNewToPickedUp() throws JsonProcessingException {
-        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA).upc("12345").build();
+        BeerDto beerDto = BeerDto.builder().id(beerId).beerStyle(BeerStyleEnum.APA.name()).upc("12345").build();
         stubFor(get(BeerServiceRestTemplateImpl.BEERUPC_PATH + "12345")
                 .willReturn(okJson(objectMapper.writeValueAsString(beerDto))));
 

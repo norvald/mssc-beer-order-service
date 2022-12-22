@@ -4,7 +4,7 @@ import guru.sfg.beer.order.service.config.JmsConfig;
 import guru.sfg.beer.order.service.domain.BeerOrder;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.services.BeerOrderManager;
-import guru.sfg.brewery.model.events.ValidateBeerOrderResponse;
+import guru.sfg.brewery.model.events.ValidateOrderResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
@@ -24,15 +24,15 @@ public class ValidateOrderResponseListener {
 
     @Transactional
     @JmsListener(destination = JmsConfig.VALIDATE_ORDER_RESPONSE_QUEUE)
-    public void listen(ValidateBeerOrderResponse event) {
+    public void listen(ValidateOrderResult event) {
         log.debug("listen("+event+")");
-        Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(UUID.fromString(event.getBeerOrderId()));
+        Optional<BeerOrder> optionalBeerOrder = beerOrderRepository.findById(UUID.fromString(event.getOrderId()));
         optionalBeerOrder.ifPresentOrElse(beerOrder -> {
-            log.debug("Validation result for beer order " + event.getBeerOrderId() + " is " + event.getIsValid());
+            log.debug("Validation result for beer order " + event.getOrderId() + " is " + event.getIsValid());
             log.debug("beerOrder: " + beerOrder);
             beerOrderManager.validateOrder(beerOrder, event.getIsValid());
         }, () -> {
-            log.error("beerOrderRepository missing beerOrder: "+event.getBeerOrderId());
+            log.error("beerOrderRepository missing beerOrder: "+event.getOrderId());
         });
     }
 }
